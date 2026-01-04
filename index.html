@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>『 𝗬𝗨𝗜 ¤ 0𝟯 』 DASHBOARD</title>
+    <title>YUI 03 | NEURAL CONTROL CENTER</title>
     
-    <script src="https://js.puter.com/v2/"></script>
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Orbitron:wght@400;700;900&family=Fira+Code:wght@400;500&display=swap');
 
@@ -63,11 +61,9 @@
         .card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid var(--border); }
         .ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
         .ai-card { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 20px; border-radius: 18px; transition: 0.3s; }
-        .ai-card:hover { border-color: var(--primary); background: rgba(0, 242, 255, 0.04); transform: translateY(-5px); }
-        .ai-card h3 { font-family: 'Orbitron'; font-size: 11px; color: var(--primary); margin-bottom: 10px; }
         
         /* --- UPDATE SECTION --- */
-        .update-box { border: 1px solid var(--primary); border-radius: 30px; padding: 30px; background: rgba(0, 242, 255, 0.03); margin: 40px 0; }
+        .update-box { border: 1px solid var(--primary); border-radius: 30px; padding: 30px; background: rgba(0, 242, 255, 0.03); margin: 40px 0; display: none; }
         .update-title { font-family: 'Orbitron'; font-weight: 900; color: var(--primary); text-align: center; margin-bottom: 25px; letter-spacing: 6px; }
         .file-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255,255,255,0.04); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 12px; }
         
@@ -112,7 +108,7 @@
         <div style="width: 150px; height: 100px; position: relative; overflow: hidden;">
             <img src="https://img1.pixhost.to/images/11314/677993135_cantarella.jpg" class="chibi-img" id="chibi">
         </div>
-        <p id="intro-text" style="font-family:'Orbitron'; font-size:10px; color:var(--primary); margin-top:30px; letter-spacing:6px;">SYNCHRONIZING...</p>
+        <p style="font-family:'Orbitron'; font-size:10px; color:var(--primary); margin-top:30px; letter-spacing:6px;">SYNCHRONIZING...</p>
     </div>
 
     <main id="dashboard">
@@ -125,12 +121,18 @@
             <section id="admin-section" style="display:none; margin-bottom:40px;">
                 <div class="card" style="border-color:var(--success); background:rgba(0,255,170,0.01);">
                     <h4 style="color:var(--success); font-family:'Orbitron'; font-size:11px; margin-bottom:20px;">ADMINISTRATION CONSOLE</h4>
-                    <div style="display:grid; grid-template-columns: 1fr; gap:20px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                         <div>
-                            <p style="font-size:10px; color:var(--warning); margin-bottom:10px;">UPDATE DEPLOYMENT (CLOUD SYNC)</p>
-                            <input type="text" id="upDesc" class="input-std" placeholder="Update Description">
+                            <p style="font-size:10px; color:var(--success); margin-bottom:10px;">USER REGISTRY</p>
+                            <input type="text" id="newU" class="input-std" placeholder="Username">
+                            <input type="password" id="newP" class="input-std" placeholder="Password">
+                            <button onclick="createUser()" class="main-btn" style="background:var(--success); color:#000;">CREATE USER</button>
+                        </div>
+                        <div>
+                            <p style="font-size:10px; color:var(--warning); margin-bottom:10px;">UPDATE DEPLOYMENT</p>
+                            <input type="text" id="upDesc" class="input-std" placeholder="Description">
                             <input type="file" id="upFile" class="input-std">
-                            <button id="deployBtn" onclick="pushUpdate()" class="main-btn" style="background:var(--warning); color:#000;">DEPLOY TO PUBLIC STREAM</button>
+                            <button onclick="pushUpdate()" class="main-btn" style="background:var(--warning); color:#000;">DEPLOY</button>
                         </div>
                     </div>
                 </div>
@@ -142,15 +144,13 @@
             </div>
 
             <div style="margin-top:-90px; position:relative; padding:0 20px; margin-bottom: 50px;">
-                <h1 style="font-family:'Orbitron'; font-size:2.5rem; color:#fff; text-shadow:0 0 20px rgba(0,242,255,0.4);">YUI ¤ 03</h1>
+                <h1 style="font-family:'Orbitron'; font-size:2.5rem; color:#fff;">YUI ¤ 03</h1>
                 <div id="typewriter" style="color:var(--primary); font-family:'Orbitron'; font-size:12px; margin-top:12px; letter-spacing:4px;"></div>
             </div>
 
-            <div class="update-box">
-                <div class="update-title">𝗨𝗣𝗗𝗔𝗧𝗘 𝗙𝗜𝗟𝗘</div>
-                <div id="file-list-container">
-                    <div style="text-align:center; color:#555; font-size:11px; padding:20px;">Establishing neural cloud connection...</div>
-                </div>
+            <div class="update-box" id="secret-box">
+                <div class="update-title">𝗖𝗟𝗔𝗦𝗦𝗜𝗙𝗜𝗘𝗗 𝗙𝗜𝗟𝗘𝗦</div>
+                <div id="file-list-container"></div>
             </div>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top: 40px;">
@@ -167,10 +167,13 @@
     <audio id="bgm" loop><source src="https://c.termai.cc/a107/jRg8Bv.mp3" type="audio/mpeg"></audio>
 
     <script>
-        // --- CONFIG ---
-        const ADMIN_CRED = { u: "admin@kev.soft", p: "kevin@admin#update+console/kev.com" };
-        const PUTER_DIR = "yui_neural_storage_v3";
-        let isSystemAdmin = false;
+        // Database User (Disimpan di Browser/LocalStorage)
+        let USERS = JSON.parse(localStorage.getItem('yui_users')) || [
+            { u: "admin@kev.soft", p: "kevin@admin#update+console/kev.com", role: "ADMIN" }
+        ];
+        
+        // Database File (Hanya ada di memori saat ini)
+        let UPDATES = JSON.parse(localStorage.getItem('yui_files')) || [];
 
         function showLogin() {
             document.getElementById('entry-overlay').style.opacity = '0';
@@ -180,106 +183,85 @@
             }, 1000);
         }
 
-        async function handleLogin() {
+        function handleLogin() {
             const u = document.getElementById('userIn').value.trim();
             const p = document.getElementById('passIn').value.trim();
+            const found = USERS.find(user => user.u === u && user.p === p);
 
-            if (u === ADMIN_CRED.u && p === ADMIN_CRED.p) {
-                isSystemAdmin = true;
-                document.getElementById('display-role').innerText = "ADMIN-CORE";
-                document.getElementById('admin-section').style.display = "block";
+            if (found) {
+                // Sembunyikan login, jalankan transisi
+                document.getElementById('display-role').innerText = found.role;
                 
-                // Masuk Dashboard
-                startSystem();
+                // Cek Role untuk akses Admin Panel
+                if(found.role === "ADMIN") {
+                    document.getElementById('admin-section').style.display = "block";
+                }
+
+                // Tampilkan Box File karena user terverifikasi
+                document.getElementById('secret-box').style.display = "block";
                 
-                // Background Cloud Auth
-                setTimeout(async () => {
-                    if (!puter.auth.isSignedIn()) {
-                        alert("Admin Detected. Selesaikan Sinkronisasi Cloud.");
-                        await puter.auth.signIn();
-                    }
-                    await puter.directory.create(PUTER_DIR).catch(()=>{});
-                }, 2000);
-            } 
-            else if (u === "user" && p === "user") {
-                isSystemAdmin = false;
-                document.getElementById('display-role').innerText = "GUEST-USER";
-                startSystem();
-            } 
-            else {
-                document.getElementById('login-err').innerText = "ACCESS DENIED: INVALID CORE KEY";
+                document.getElementById('login-overlay').style.opacity = '0';
+                setTimeout(startSystem, 1200);
+            } else {
+                document.getElementById('login-err').innerText = "ACCESS DENIED: UNAUTHORIZED IDENTITY";
             }
         }
 
-        async function pushUpdate() {
+        // Fungsi Admin untuk buat user baru
+        function createUser() {
+            const u = document.getElementById('newU').value.trim();
+            const p = document.getElementById('newP').value.trim();
+            if(u && p) {
+                USERS.push({ u: u, p: p, role: "USER" });
+                localStorage.setItem('yui_users', JSON.stringify(USERS));
+                alert("Neural Registry Updated: " + u + " has been granted access.");
+                document.getElementById('newU').value = ""; document.getElementById('newP').value = "";
+            } else {
+                alert("Input identity and code first!");
+            }
+        }
+
+        // Fungsi Admin untuk Upload File
+        function pushUpdate() {
             const desc = document.getElementById('upDesc').value;
             const fileInput = document.getElementById('upFile');
-            const btn = document.getElementById('deployBtn');
+            
+            if(!fileInput.files[0]) return alert("Select file first!");
 
-            if (!fileInput.files[0] || !desc) return alert("Isi deskripsi dan pilih file!");
+            const fileName = fileInput.files[0].name;
+            // Simulasi URL (karena ini client side saja)
+            const fileData = URL.createObjectURL(fileInput.files[0]);
 
-            btn.innerText = "UPLOADING TO NEURAL CLOUD...";
-            btn.disabled = true;
+            UPDATES.unshift({ 
+                name: fileName, 
+                desc: desc, 
+                url: fileData, 
+                time: new Date().toLocaleTimeString() 
+            });
 
-            try {
-                const file = fileInput.files[0];
-                const path = `${PUTER_DIR}/${file.name}`;
-                
-                // 1. Upload ke Puter
-                await puter.fs.write(path, file);
-                // 2. Buat File jadi Public agar user lain bisa download
-                const pubFile = await puter.fs.makePublic(path);
-
-                // 3. Update Meta Data
-                let meta = [];
-                try {
-                    const res = await puter.fs.read(`${PUTER_DIR}/meta.json`);
-                    meta = JSON.parse(await res.text());
-                } catch(e) {}
-
-                meta.unshift({
-                    name: file.name,
-                    desc: desc,
-                    url: pubFile.url,
-                    time: new Date().toLocaleTimeString()
-                });
-
-                await puter.fs.write(`${PUTER_DIR}/meta.json`, JSON.stringify(meta));
-                await puter.fs.makePublic(`${PUTER_DIR}/meta.json`);
-
-                alert("Deploy Berhasil!");
-                location.reload();
-            } catch (err) {
-                alert("Cloud Error: " + err.message);
-                btn.disabled = false;
-                btn.innerText = "DEPLOY TO PUBLIC STREAM";
-            }
+            localStorage.setItem('yui_files', JSON.stringify(UPDATES));
+            renderUpdates();
+            alert("Classified File Deployed.");
         }
 
-        async function fetchUpdates() {
+        function renderUpdates() {
             const container = document.getElementById('file-list-container');
-            try {
-                // Membaca meta.json yang sudah dibuat public oleh admin
-                const res = await puter.fs.read(`${PUTER_DIR}/meta.json`);
-                const data = JSON.parse(await res.text());
-
-                if (data.length === 0) throw new Error();
-
-                container.innerHTML = "";
-                data.forEach(up => {
-                    container.innerHTML += `
-                        <div class="file-item">
-                            <div class="file-info">
-                                <h5 style="font-family:'Orbitron'; font-size:13px; color:#fff;">${up.name} <span class="badge bg-fix">STABLE</span></h5>
-                                <p style="font-size:10px; color:#888; margin-top:5px;">${up.desc} <br> <span style="color:var(--primary); font-size:9px;">Sync Time: ${up.time}</span></p>
-                            </div>
-                            <a href="${up.url}" target="_blank" class="main-btn btn-download">GET FILE</a>
-                        </div>
-                    `;
-                });
-            } catch (e) {
-                container.innerHTML = `<div style="text-align:center; color:#444; font-size:10px; padding:20px;">No public updates available in this sector.</div>`;
+            container.innerHTML = "";
+            if(UPDATES.length === 0) {
+                container.innerHTML = "<p style='text-align:center; opacity:0.3; font-size:10px;'>Empty vault.</p>";
+                return;
             }
+            UPDATES.forEach(up => {
+                container.innerHTML += `
+                    <div class="file-item">
+                        <div>
+                            <h5 style="font-family:'Orbitron'; font-size:13px; color:#fff;">${up.name}</h5>
+                            <p style="font-size:10px; color:#888; margin-top:5px;">${up.desc} | <span style="color:var(--primary);">${up.time}</span></p>
+                        </div>
+                        <a href="${up.url}" download="${up.name}" class="btn-download">DOWNLOAD</a>
+                    </div>
+                `;
+            });
         }
 
         function startSystem() {
@@ -288,8 +270,8 @@
             intro.style.display = 'flex';
             setTimeout(() => intro.style.opacity = '1', 50);
             document.getElementById('bgm').play().catch(()=>{});
-
-            fetchUpdates(); // Load file dari cloud
+            
+            renderUpdates();
 
             document.getElementById('chibi').animate([
                 { bottom: '-120px' }, { bottom: '0px', offset: 0.3 }, { bottom: '0px', offset: 0.7 }, { bottom: '-120px' }
@@ -305,7 +287,7 @@
             }, 6000);
         }
 
-        // --- UI UTILS ---
+        // --- UI ANIMATION ---
         function runTypewriter() {
             const txt = ["NEURAL LINK STABLE", "KEV.SOFT ENGINE v3", "YUI 03 ONLINE"];
             let i = 0, j = 0, target = document.getElementById('typewriter');
@@ -325,7 +307,6 @@
                 container.appendChild(star);
             }
         }
-        
         function createShootingStar() {
             const container = document.getElementById('star-container');
             const star = document.createElement('div');
