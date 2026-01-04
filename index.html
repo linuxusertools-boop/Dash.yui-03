@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YUI 03 | NEURAL CONTROL CENTER</title>
+    <title>YUI 03 | PRIVATE NEURAL LINK</title>
     
+    <script src="https://js.puter.com/v2/"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Orbitron:wght@400;700;900&family=Fira+Code:wght@400;500&display=swap');
 
@@ -42,7 +44,6 @@
         #login-overlay { display: none; background: rgba(0,0,0,0.96); backdrop-filter: blur(20px); }
         #intro-screen { display: none; background: #000; opacity: 0; }
 
-        /* --- POWER HUD --- */
         .hud-ring { position: absolute; width: 280px; height: 280px; border: 1px solid rgba(0, 242, 255, 0.1); border-radius: 50%; animation: rotateHUD 15s linear infinite; }
         .hud-ring::before { content: ''; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 15px var(--primary); }
         @keyframes rotateHUD { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -50,7 +51,6 @@
         .power-btn { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); background: rgba(0, 242, 255, 0.05); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); transition: 0.5s; z-index: 2; }
         .power-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px var(--primary); }
 
-        /* --- LOGIN & DASHBOARD --- */
         .login-box { width: 340px; padding: 40px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); border-radius: 30px; }
         .input-std { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 13px; margin-bottom: 15px; }
 
@@ -59,10 +59,6 @@
         .max-width { max-width: 850px; margin: 0 auto; }
 
         .card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid var(--border); }
-        .ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
-        .ai-card { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 20px; border-radius: 18px; transition: 0.3s; }
-        
-        /* --- UPDATE SECTION --- */
         .update-box { border: 1px solid var(--primary); border-radius: 30px; padding: 30px; background: rgba(0, 242, 255, 0.03); margin: 40px 0; display: none; }
         .update-title { font-family: 'Orbitron'; font-weight: 900; color: var(--primary); text-align: center; margin-bottom: 25px; letter-spacing: 6px; }
         .file-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255,255,255,0.04); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 12px; }
@@ -74,10 +70,6 @@
         .banner-wrap { position: relative; width: 100%; aspect-ratio: 21 / 9; border-radius: 35px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 50px; }
         .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: 2s; }
         .slide.active { opacity: 0.5; }
-
-        .badge { font-size: 8px; padding: 3px 8px; border-radius: 5px; font-weight: bold; margin-left: 8px; vertical-align: middle; }
-        .bg-fix { background: var(--success); color: #000; }
-        .bg-maint { background: var(--danger); color: #fff; }
 
         .chibi-img { position: absolute; width: 85px; bottom: -120px; left: 50%; transform: translateX(-50%); opacity: 0.9; }
     </style>
@@ -99,7 +91,7 @@
             <h2 style="font-family:'Orbitron'; font-size:14px; color:var(--primary); text-align:center; margin-bottom:30px; letter-spacing:4px;">NEURAL ACCESS</h2>
             <input type="text" id="userIn" class="input-std" placeholder="Identity" autocomplete="off">
             <input type="password" id="passIn" class="input-std" placeholder="Security Code" autocomplete="off">
-            <button onclick="handleLogin()" class="main-btn" style="background:var(--primary); color:#000;">INITIALIZE SYNC</button>
+            <button id="loginBtn" onclick="handleLogin()" class="main-btn" style="background:var(--primary); color:#000;">INITIALIZE SYNC</button>
             <div id="login-err" style="color:var(--danger); font-size:10px; text-align:center; margin-top:15px; font-family:'Fira Code';"></div>
         </div>
     </div>
@@ -108,7 +100,7 @@
         <div style="width: 150px; height: 100px; position: relative; overflow: hidden;">
             <img src="https://img1.pixhost.to/images/11314/677993135_cantarella.jpg" class="chibi-img" id="chibi">
         </div>
-        <p style="font-family:'Orbitron'; font-size:10px; color:var(--primary); margin-top:30px; letter-spacing:6px;">SYNCHRONIZING...</p>
+        <p style="font-family:'Orbitron'; font-size:10px; color:var(--primary); margin-top:30px; letter-spacing:6px;">FETCHING CLOUD DATA...</p>
     </div>
 
     <main id="dashboard">
@@ -121,18 +113,18 @@
             <section id="admin-section" style="display:none; margin-bottom:40px;">
                 <div class="card" style="border-color:var(--success); background:rgba(0,255,170,0.01);">
                     <h4 style="color:var(--success); font-family:'Orbitron'; font-size:11px; margin-bottom:20px;">ADMINISTRATION CONSOLE</h4>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div style="display:grid; grid-template-columns: 1fr; gap:20px;">
                         <div>
                             <p style="font-size:10px; color:var(--success); margin-bottom:10px;">USER REGISTRY</p>
-                            <input type="text" id="newU" class="input-std" placeholder="Username">
-                            <input type="password" id="newP" class="input-std" placeholder="Password">
-                            <button onclick="createUser()" class="main-btn" style="background:var(--success); color:#000;">CREATE USER</button>
+                            <input type="text" id="newU" class="input-std" placeholder="New Username">
+                            <input type="password" id="newP" class="input-std" placeholder="New Password">
+                            <button onclick="createUser()" class="main-btn" style="background:var(--success); color:#000;">SAVE TO CLOUD DATABASE</button>
                         </div>
-                        <div>
-                            <p style="font-size:10px; color:var(--warning); margin-bottom:10px;">UPDATE DEPLOYMENT</p>
-                            <input type="text" id="upDesc" class="input-std" placeholder="Description">
+                        <div style="border-top: 1px solid var(--border); padding-top: 20px;">
+                            <p style="font-size:10px; color:var(--warning); margin-bottom:10px;">UPLOAD PRIVATE FILE</p>
+                            <input type="text" id="upDesc" class="input-std" placeholder="File Description">
                             <input type="file" id="upFile" class="input-std">
-                            <button onclick="pushUpdate()" class="main-btn" style="background:var(--warning); color:#000;">DEPLOY</button>
+                            <button id="upBtn" onclick="pushUpdate()" class="main-btn" style="background:var(--warning); color:#000;">DEPLOY TO PRIVATE STREAM</button>
                         </div>
                     </div>
                 </div>
@@ -153,11 +145,6 @@
                 <div id="file-list-container"></div>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top: 40px;">
-                <a href="https://whatsapp.com/channel/0029VbBtesK5kg78mXFRDa3W" target="_blank" class="main-btn" style="border-color:#25d366; color:#25d366;">WA CHANNEL</a>
-                <a href="https://wa.me/628999864414" target="_blank" class="main-btn" style="border-color:var(--secondary); color:var(--secondary);">DEVELOPER</a>
-            </div>
-
             <footer style="text-align: center; padding: 80px 0 40px; opacity: 0.3; font-family: 'Orbitron'; font-size: 7px; letter-spacing: 3px;">
                 CORE SYSTEM BY <span style="color:var(--primary)">KEV.SOFT</span> • 2026
             </footer>
@@ -167,15 +154,10 @@
     <audio id="bgm" loop><source src="https://c.termai.cc/a107/jRg8Bv.mp3" type="audio/mpeg"></audio>
 
     <script>
-        // Database User (Disimpan di Browser/LocalStorage)
-        let USERS = JSON.parse(localStorage.getItem('yui_users')) || [
-            { u: "admin@kev.soft", p: "kevin@admin#update+console/kev.com", role: "ADMIN" }
-        ];
-        
-        // Database File (Hanya ada di memori saat ini)
-        let UPDATES = JSON.parse(localStorage.getItem('yui_files')) || [];
+        const CLOUD_DIR = "yui_private_system_v3";
+        const ADMIN_CORE = { u: "admin@kev.soft", p: "kevin@admin#update+console/kev.com" };
 
-        function showLogin() {
+        async function showLogin() {
             document.getElementById('entry-overlay').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('entry-overlay').style.display = 'none';
@@ -183,85 +165,114 @@
             }, 1000);
         }
 
-        function handleLogin() {
+        async function handleLogin() {
             const u = document.getElementById('userIn').value.trim();
             const p = document.getElementById('passIn').value.trim();
-            const found = USERS.find(user => user.u === u && user.p === p);
+            const btn = document.getElementById('loginBtn');
+            btn.innerText = "AUTHENTICATING...";
 
-            if (found) {
-                // Sembunyikan login, jalankan transisi
-                document.getElementById('display-role').innerText = found.role;
-                
-                // Cek Role untuk akses Admin Panel
-                if(found.role === "ADMIN") {
-                    document.getElementById('admin-section').style.display = "block";
-                }
-
-                // Tampilkan Box File karena user terverifikasi
-                document.getElementById('secret-box').style.display = "block";
-                
-                document.getElementById('login-overlay').style.opacity = '0';
-                setTimeout(startSystem, 1200);
-            } else {
-                document.getElementById('login-err').innerText = "ACCESS DENIED: UNAUTHORIZED IDENTITY";
-            }
-        }
-
-        // Fungsi Admin untuk buat user baru
-        function createUser() {
-            const u = document.getElementById('newU').value.trim();
-            const p = document.getElementById('newP').value.trim();
-            if(u && p) {
-                USERS.push({ u: u, p: p, role: "USER" });
-                localStorage.setItem('yui_users', JSON.stringify(USERS));
-                alert("Neural Registry Updated: " + u + " has been granted access.");
-                document.getElementById('newU').value = ""; document.getElementById('newP').value = "";
-            } else {
-                alert("Input identity and code first!");
-            }
-        }
-
-        // Fungsi Admin untuk Upload File
-        function pushUpdate() {
-            const desc = document.getElementById('upDesc').value;
-            const fileInput = document.getElementById('upFile');
-            
-            if(!fileInput.files[0]) return alert("Select file first!");
-
-            const fileName = fileInput.files[0].name;
-            // Simulasi URL (karena ini client side saja)
-            const fileData = URL.createObjectURL(fileInput.files[0]);
-
-            UPDATES.unshift({ 
-                name: fileName, 
-                desc: desc, 
-                url: fileData, 
-                time: new Date().toLocaleTimeString() 
-            });
-
-            localStorage.setItem('yui_files', JSON.stringify(UPDATES));
-            renderUpdates();
-            alert("Classified File Deployed.");
-        }
-
-        function renderUpdates() {
-            const container = document.getElementById('file-list-container');
-            container.innerHTML = "";
-            if(UPDATES.length === 0) {
-                container.innerHTML = "<p style='text-align:center; opacity:0.3; font-size:10px;'>Empty vault.</p>";
+            // 1. Cek jika dia Admin Utama
+            if (u === ADMIN_CORE.u && p === ADMIN_CORE.p) {
+                if (!puter.auth.isSignedIn()) await puter.auth.signIn(); // Admin harus login puter
+                await puter.directory.create(CLOUD_DIR).catch(()=>{});
+                setupDashboard("ADMIN-CORE", true);
                 return;
             }
-            UPDATES.forEach(up => {
-                container.innerHTML += `
-                    <div class="file-item">
-                        <div>
-                            <h5 style="font-family:'Orbitron'; font-size:13px; color:#fff;">${up.name}</h5>
-                            <p style="font-size:10px; color:#888; margin-top:5px;">${up.desc} | <span style="color:var(--primary);">${up.time}</span></p>
+
+            // 2. Cek User di Cloud
+            try {
+                const res = await puter.fs.read(`${CLOUD_DIR}/users.json`);
+                const users = JSON.parse(await res.text());
+                const found = users.find(user => user.u === u && user.p === p);
+
+                if (found) {
+                    setupDashboard("AUTHORIZED-USER", false);
+                } else {
+                    throw new Error();
+                }
+            } catch (e) {
+                document.getElementById('login-err').innerText = "ACCESS DENIED: IDENTITY NOT FOUND";
+                btn.innerText = "INITIALIZE SYNC";
+            }
+        }
+
+        function setupDashboard(role, isAdmin) {
+            document.getElementById('display-role').innerText = role;
+            if(isAdmin) document.getElementById('admin-section').style.display = "block";
+            document.getElementById('secret-box').style.display = "block";
+            document.getElementById('login-overlay').style.opacity = '0';
+            setTimeout(startSystem, 1200);
+        }
+
+        async function createUser() {
+            const u = document.getElementById('newU').value.trim();
+            const p = document.getElementById('newP').value.trim();
+            if(!u || !p) return alert("Fill data!");
+
+            try {
+                let users = [];
+                try {
+                    const res = await puter.fs.read(`${CLOUD_DIR}/users.json`);
+                    users = JSON.parse(await res.text());
+                } catch(e) {}
+
+                users.push({ u, p, role: "USER" });
+                await puter.fs.write(`${CLOUD_DIR}/users.json`, JSON.stringify(users));
+                await puter.fs.makePublic(`${CLOUD_DIR}/users.json`); // Agar HP lain bisa baca saat login
+
+                alert("User " + u + " saved to Cloud!");
+                document.getElementById('newU').value = ""; document.getElementById('newP').value = "";
+            } catch(err) { alert("Error: " + err.message); }
+        }
+
+        async function pushUpdate() {
+            const desc = document.getElementById('upDesc').value;
+            const fileInput = document.getElementById('upFile');
+            const btn = document.getElementById('upBtn');
+            if(!fileInput.files[0] || !desc) return alert("Complete data!");
+
+            btn.innerText = "UPLOADING...";
+            btn.disabled = true;
+
+            try {
+                const file = fileInput.files[0];
+                const path = `${CLOUD_DIR}/${file.name}`;
+                await puter.fs.write(path, file);
+                const pub = await puter.fs.makePublic(path);
+
+                let meta = [];
+                try {
+                    const res = await puter.fs.read(`${CLOUD_DIR}/files.json`);
+                    meta = JSON.parse(await res.text());
+                } catch(e) {}
+
+                meta.unshift({ name: file.name, desc, url: pub.url, time: new Date().toLocaleTimeString() });
+                await puter.fs.write(`${CLOUD_DIR}/files.json`, JSON.stringify(meta));
+                await puter.fs.makePublic(`${CLOUD_DIR}/files.json`);
+
+                alert("File Deployed!");
+                location.reload();
+            } catch(err) { alert(err.message); btn.disabled = false; }
+        }
+
+        async function fetchFiles() {
+            const container = document.getElementById('file-list-container');
+            try {
+                const res = await puter.fs.read(`${CLOUD_DIR}/files.json`);
+                const data = JSON.parse(await res.text());
+                container.innerHTML = "";
+                data.forEach(up => {
+                    container.innerHTML += `
+                        <div class="file-item">
+                            <div>
+                                <h5 style="font-family:'Orbitron'; font-size:13px; color:#fff;">${up.name}</h5>
+                                <p style="font-size:10px; color:#888; margin-top:5px;">${up.desc} | <span style="color:var(--primary);">${up.time}</span></p>
+                            </div>
+                            <a href="${up.url}" target="_blank" class="btn-download">DOWNLOAD</a>
                         </div>
-                        <a href="${up.url}" download="${up.name}" class="btn-download">DOWNLOAD</a>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            } catch(e) { container.innerHTML = "<p style='text-align:center; opacity:0.3; font-size:10px;'>Vault is empty.</p>"; }
         }
 
         function startSystem() {
@@ -271,7 +282,7 @@
             setTimeout(() => intro.style.opacity = '1', 50);
             document.getElementById('bgm').play().catch(()=>{});
             
-            renderUpdates();
+            fetchFiles();
 
             document.getElementById('chibi').animate([
                 { bottom: '-120px' }, { bottom: '0px', offset: 0.3 }, { bottom: '0px', offset: 0.7 }, { bottom: '-120px' }
