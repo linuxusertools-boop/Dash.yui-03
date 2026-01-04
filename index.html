@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YUI 03 | PRIVATE NEURAL LINK</title>
+    <title>YUI 03 | FAST NEURAL LINK</title>
     
     <script src="https://js.puter.com/v2/"></script>
 
@@ -34,10 +34,7 @@
         .star { position: absolute; background: #fff; border-radius: 50%; opacity: 0.3; animation: twinkle var(--duration) infinite; }
         @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
         
-        .shooting-star { position: absolute; width: 1px; height: 1px; background: #fff; animation: shoot 5s linear infinite; opacity: 0; }
-        @keyframes shoot { 0% { transform: translateX(0) translateY(0) rotate(315deg); opacity: 0; } 5% { opacity: 1; } 20% { transform: translateX(-500px) translateY(500px) rotate(315deg); opacity: 0; } 100% { opacity: 0; } }
-
-        #entry-overlay, #login-overlay, #intro-screen { position: fixed; inset: 0; z-index: 30000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        #entry-overlay, #login-overlay, #intro-screen { position: fixed; inset: 0; z-index: 30000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         #entry-overlay { background: #000; }
         #login-overlay { display: none; background: rgba(0,0,0,0.96); backdrop-filter: blur(20px); }
         #intro-screen { display: none; background: #000; opacity: 0; }
@@ -46,13 +43,13 @@
         .hud-ring::before { content: ''; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 15px var(--primary); }
         @keyframes rotateHUD { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        .power-btn { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); background: rgba(0, 242, 255, 0.05); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); transition: 0.5s; z-index: 2; }
-        .power-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px var(--primary); }
+        .power-btn { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); background: rgba(0, 242, 255, 0.05); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); transition: 0.3s; z-index: 2; }
+        .power-btn:active { transform: scale(0.9); }
 
         .login-box { width: 340px; padding: 40px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); border-radius: 30px; }
         .input-std { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 13px; margin-bottom: 15px; }
 
-        #dashboard { display: none; opacity: 0; transition: 2.5s; padding: 20px; height: 100vh; overflow-y: auto; }
+        #dashboard { display: none; opacity: 0; transition: 0.8s; padding: 20px; height: 100vh; overflow-y: auto; }
         #dashboard.active { display: block; opacity: 1; }
         .max-width { max-width: 850px; margin: 0 auto; }
 
@@ -61,12 +58,12 @@
         .update-title { font-family: 'Orbitron'; font-weight: 900; color: var(--primary); text-align: center; margin-bottom: 25px; letter-spacing: 6px; }
         .file-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255,255,255,0.04); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 12px; }
         
-        .main-btn { display: block; width: 100%; text-decoration: none; padding: 15px; text-align: center; border-radius: 15px; font-family: 'Orbitron'; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.4s; border: 1px solid var(--border); color: #fff; background: rgba(255,255,255,0.02); }
-        .main-btn:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+        .main-btn { display: block; width: 100%; text-decoration: none; padding: 15px; text-align: center; border-radius: 15px; font-family: 'Orbitron'; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; border: 1px solid var(--border); color: #fff; background: rgba(255,255,255,0.02); }
+        .main-btn:active { transform: scale(0.98); }
         .btn-download { background: var(--primary); color: #000; border: none; width: auto; padding: 10px 20px; font-size: 9px; font-family: 'Orbitron'; font-weight: 800; border-radius: 10px; }
 
         .banner-wrap { position: relative; width: 100%; aspect-ratio: 21 / 9; border-radius: 35px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 50px; }
-        .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: 2s; }
+        .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: 1s; }
         .slide.active { opacity: 0.5; }
 
         .chibi-img { position: absolute; width: 85px; bottom: -120px; left: 50%; transform: translateX(-50%); opacity: 0.9; }
@@ -79,9 +76,9 @@
     <div id="entry-overlay">
         <div class="hud-ring"></div>
         <div class="power-btn" onclick="showLogin()">
-            <div style="width:3px; height:25px; background:var(--primary); border-radius:5px; position:relative; top:-2px;"></div>
+            <div style="width:3px; height:25px; background:var(--primary); border-radius:5px;"></div>
         </div>
-        <p style="margin-top:30px; font-family:'Orbitron'; font-size:12px; letter-spacing:8px; color:var(--primary);">SYSTEM STANDBY</p>
+        <p style="margin-top:30px; font-family:'Orbitron'; font-size:12px; letter-spacing:8px; color:var(--primary);">SYSTEM READY</p>
     </div>
 
     <div id="login-overlay">
@@ -89,7 +86,7 @@
             <h2 style="font-family:'Orbitron'; font-size:14px; color:var(--primary); text-align:center; margin-bottom:30px; letter-spacing:4px;">NEURAL ACCESS</h2>
             <input type="text" id="userIn" class="input-std" placeholder="Identity" autocomplete="off">
             <input type="password" id="passIn" class="input-std" placeholder="Security Code" autocomplete="off">
-            <button id="loginBtn" onclick="handleLogin()" class="main-btn" style="background:var(--primary); color:#000;">INITIALIZE SYNC</button>
+            <button id="loginBtn" onclick="handleLogin()" class="main-btn" style="background:var(--primary); color:#000;">SYNC NOW</button>
             <div id="login-err" style="color:var(--danger); font-size:10px; text-align:center; margin-top:15px; font-family:'Fira Code';"></div>
         </div>
     </div>
@@ -98,7 +95,7 @@
         <div style="width: 150px; height: 100px; position: relative; overflow: hidden;">
             <img src="https://img1.pixhost.to/images/11314/677993135_cantarella.jpg" class="chibi-img" id="chibi">
         </div>
-        <p id="intro-status" style="font-family:'Orbitron'; font-size:10px; color:var(--primary); margin-top:30px; letter-spacing:6px;">SYNCHRONIZING...</p>
+        <p id="intro-status" style="font-family:'Orbitron'; font-size:10px; color:var(--primary); margin-top:30px; letter-spacing:6px;">LINKING...</p>
     </div>
 
     <main id="dashboard">
@@ -110,19 +107,17 @@
 
             <section id="admin-section" style="display:none; margin-bottom:40px;">
                 <div class="card" style="border-color:var(--success); background:rgba(0,255,170,0.01);">
-                    <h4 style="color:var(--success); font-family:'Orbitron'; font-size:11px; margin-bottom:20px;">ADMINISTRATION CONSOLE</h4>
+                    <h4 style="color:var(--success); font-family:'Orbitron'; font-size:11px; margin-bottom:20px;">ADMINISTRATION</h4>
                     <div style="display:grid; grid-template-columns: 1fr; gap:20px;">
                         <div>
-                            <p style="font-size:10px; color:var(--success); margin-bottom:10px;">USER REGISTRY</p>
-                            <input type="text" id="newU" class="input-std" placeholder="New Username">
-                            <input type="password" id="newP" class="input-std" placeholder="New Password">
-                            <button onclick="createUser()" class="main-btn" style="background:var(--success); color:#000;">SAVE TO CLOUD</button>
+                            <input type="text" id="newU" class="input-std" placeholder="Username">
+                            <input type="password" id="newP" class="input-std" placeholder="Password">
+                            <button onclick="createUser()" class="main-btn" style="background:var(--success); color:#000;">ADD USER</button>
                         </div>
                         <div style="border-top: 1px solid var(--border); padding-top: 20px;">
-                            <p style="font-size:10px; color:var(--warning); margin-bottom:10px;">UPLOAD PRIVATE FILE</p>
-                            <input type="text" id="upDesc" class="input-std" placeholder="File Description">
+                            <input type="text" id="upDesc" class="input-std" placeholder="File Info">
                             <input type="file" id="upFile" class="input-std">
-                            <button id="upBtn" onclick="pushUpdate()" class="main-btn" style="background:var(--warning); color:#000;">DEPLOY FILE</button>
+                            <button id="upBtn" onclick="pushUpdate()" class="main-btn" style="background:var(--warning); color:#000;">PUSH FILE</button>
                         </div>
                     </div>
                 </div>
@@ -139,12 +134,12 @@
             </div>
 
             <div class="update-box" id="secret-box">
-                <div class="update-title">𝗖𝗟𝗔𝗦𝗦𝗜𝗙𝗜𝗘𝗗 𝗙𝗜𝗟𝗘𝗦</div>
+                <div class="update-title">𝗖𝗟𝗔𝗦𝗦𝗜𝗙𝗜𝗘𝗗</div>
                 <div id="file-list-container"></div>
             </div>
 
-            <footer style="text-align: center; padding: 80px 0 40px; opacity: 0.3; font-family: 'Orbitron'; font-size: 7px; letter-spacing: 3px;">
-                CORE SYSTEM BY <span style="color:var(--primary)">KEV.SOFT</span> • 2026
+            <footer style="text-align: center; padding: 40px 0; opacity: 0.3; font-family: 'Orbitron'; font-size: 7px;">
+                KEV.SOFT • 2026
             </footer>
         </div>
     </main>
@@ -152,50 +147,36 @@
     <audio id="bgm" loop><source src="https://c.termai.cc/a107/jRg8Bv.mp3" type="audio/mpeg"></audio>
 
     <script>
-        const CLOUD_DIR = "yui_neural_v3";
+        const CLOUD_DIR = "yui_fast_v3";
         const ADMIN_ID = "admin@kev.soft";
         const ADMIN_PW = "kevin@admin#update+console/kev.com";
         
-        // Link Publik database (Akan otomatis terisi saat Admin login)
-        let public_user_link = localStorage.getItem('yui_pub_user') || "";
-        let public_file_link = localStorage.getItem('yui_pub_file') || "";
+        let pub_u = localStorage.getItem('p_u') || "";
+        let pub_f = localStorage.getItem('p_f') || "";
 
         async function handleLogin() {
             const u = document.getElementById('userIn').value.trim();
             const p = document.getElementById('passIn').value.trim();
             const btn = document.getElementById('loginBtn');
-            btn.innerText = "VERIFYING...";
+            btn.innerText = "LINKING...";
 
-            // 1. LOGIN ADMIN
             if (u === ADMIN_ID && p === ADMIN_PW) {
-                if (!puter.auth.isSignedIn()) {
-                    btn.innerText = "LOGIN PUTER...";
-                    await puter.auth.signIn();
-                }
+                if (!puter.auth.isSignedIn()) await puter.auth.signIn();
                 await puter.directory.create(CLOUD_DIR).catch(()=>{});
-                setupDashboard("ADMIN-CORE", true);
+                setupDashboard("ADMIN", true);
                 return;
             }
 
-            // 2. LOGIN USER BIASA (Tanpa Puter Login)
             try {
-                if(!public_user_link) {
-                    btn.innerText = "CLOUD NOT LINKED";
-                    setTimeout(()=> btn.innerText = "INITIALIZE SYNC", 2000);
-                    return;
-                }
-                const response = await fetch(public_user_link);
-                const users = await response.json();
-                const found = users.find(user => user.u === u && user.p === p);
-
-                if (found) {
-                    setupDashboard("AUTHORIZED-USER", false);
-                } else {
-                    throw new Error();
-                }
+                if(!pub_u) throw new Error("LINK_MISSING");
+                const res = await fetch(pub_u);
+                const users = await res.json();
+                if (users.find(x => x.u === u && x.p === p)) {
+                    setupDashboard("USER", false);
+                } else throw new Error();
             } catch (e) {
-                document.getElementById('login-err').innerText = "ACCESS DENIED: SEC_ERR_04";
-                btn.innerText = "INITIALIZE SYNC";
+                document.getElementById('login-err').innerText = "DENIED: INVALID KEY";
+                btn.innerText = "SYNC NOW";
             }
         }
 
@@ -203,167 +184,115 @@
             document.getElementById('display-role').innerText = role;
             if(isAdmin) {
                 document.getElementById('admin-section').style.display = "block";
-                // Admin mempublikasikan link database agar bisa dibaca user biasa
-                await syncPublicLinks();
+                await syncLinks();
             }
             document.getElementById('secret-box').style.display = "block";
-            document.getElementById('login-overlay').style.opacity = '0';
-            setTimeout(startSystem, 1200);
+            startSystem(); // Langsung pindah
         }
 
-        async function syncPublicLinks() {
-            try {
-                // Pastikan file database ada
-                if(!await puter.fs.exists(`${CLOUD_DIR}/users.json`)) await puter.fs.write(`${CLOUD_DIR}/users.json`, JSON.stringify([]));
-                if(!await puter.fs.exists(`${CLOUD_DIR}/files.json`)) await puter.fs.write(`${CLOUD_DIR}/files.json`, JSON.stringify([]));
-
-                const uPub = await puter.fs.makePublic(`${CLOUD_DIR}/users.json`);
-                const fPub = await puter.fs.makePublic(`${CLOUD_DIR}/files.json`);
-                
-                public_user_link = uPub.url;
-                public_file_link = fPub.url;
-                
-                localStorage.setItem('yui_pub_user', public_user_link);
-                localStorage.setItem('yui_pub_file', public_file_link);
-            } catch(e) { console.log("Sync Error", e); }
+        async function syncLinks() {
+            if(!await puter.fs.exists(`${CLOUD_DIR}/u.json`)) await puter.fs.write(`${CLOUD_DIR}/u.json`, "[]");
+            if(!await puter.fs.exists(`${CLOUD_DIR}/f.json`)) await puter.fs.write(`${CLOUD_DIR}/f.json`, "[]");
+            pub_u = (await puter.fs.makePublic(`${CLOUD_DIR}/u.json`)).url;
+            pub_f = (await puter.fs.makePublic(`${CLOUD_DIR}/f.json`)).url;
+            localStorage.setItem('p_u', pub_u);
+            localStorage.setItem('p_f', pub_f);
         }
 
         async function createUser() {
             const u = document.getElementById('newU').value.trim();
             const p = document.getElementById('newP').value.trim();
             if(!u || !p) return;
-
-            try {
-                const res = await puter.fs.read(`${CLOUD_DIR}/users.json`);
-                let users = JSON.parse(await res.text());
-                users.push({ u, p });
-                await puter.fs.write(`${CLOUD_DIR}/users.json`, JSON.stringify(users));
-                await puter.fs.makePublic(`${CLOUD_DIR}/users.json`);
-                alert("User Registered!");
-                document.getElementById('newU').value = ""; document.getElementById('newP').value = "";
-            } catch(e) { alert("Failed to save user"); }
+            const res = await puter.fs.read(`${CLOUD_DIR}/u.json`);
+            let data = JSON.parse(await res.text());
+            data.push({ u, p });
+            await puter.fs.write(`${CLOUD_DIR}/u.json`, JSON.stringify(data));
+            await puter.fs.makePublic(`${CLOUD_DIR}/u.json`);
+            alert("User Added.");
         }
 
         async function pushUpdate() {
             const desc = document.getElementById('upDesc').value;
-            const fileInput = document.getElementById('upFile');
-            if(!fileInput.files[0] || !desc) return;
-
-            const btn = document.getElementById('upBtn');
-            btn.innerText = "DEPLOYING...";
-            
-            try {
-                const file = fileInput.files[0];
-                await puter.fs.write(`${CLOUD_DIR}/${file.name}`, file);
-                const filePub = await puter.fs.makePublic(`${CLOUD_DIR}/${file.name}`);
-
-                const res = await puter.fs.read(`${CLOUD_DIR}/files.json`);
-                let files = JSON.parse(await res.text());
-                files.unshift({ name: file.name, desc, url: filePub.url, time: new Date().toLocaleTimeString() });
-                
-                await puter.fs.write(`${CLOUD_DIR}/files.json`, JSON.stringify(files));
-                await puter.fs.makePublic(`${CLOUD_DIR}/files.json`);
-                
-                alert("File Securely Deployed!");
-                location.reload();
-            } catch(e) { alert("Upload failed"); btn.innerText = "DEPLOY FILE"; }
+            const file = document.getElementById('upFile').files[0];
+            if(!file || !desc) return;
+            document.getElementById('upBtn').innerText = "PUSHING...";
+            await puter.fs.write(`${CLOUD_DIR}/${file.name}`, file);
+            const fUrl = (await puter.fs.makePublic(`${CLOUD_DIR}/${file.name}`)).url;
+            const res = await puter.fs.read(`${CLOUD_DIR}/f.json`);
+            let files = JSON.parse(await res.text());
+            files.unshift({ name: file.name, desc, url: fUrl, time: new Date().toLocaleTimeString() });
+            await puter.fs.write(`${CLOUD_DIR}/f.json`, JSON.stringify(files));
+            await puter.fs.makePublic(`${CLOUD_DIR}/f.json`);
+            location.reload();
         }
 
         async function fetchFiles() {
+            if(!pub_f) return;
+            const res = await fetch(pub_f);
+            const data = await res.json();
             const container = document.getElementById('file-list-container');
-            try {
-                const link = public_file_link || "";
-                if(!link) throw new Error();
-                const response = await fetch(link);
-                const data = await response.json();
-                
-                container.innerHTML = "";
-                data.forEach(up => {
-                    container.innerHTML += `
-                        <div class="file-item">
-                            <div>
-                                <h5 style="font-family:'Orbitron'; font-size:13px; color:#fff;">${up.name}</h5>
-                                <p style="font-size:10px; color:#888; margin-top:5px;">${up.desc} | <span style="color:var(--primary);">${up.time}</span></p>
-                            </div>
-                            <a href="${up.url}" target="_blank" class="btn-download">DOWNLOAD</a>
-                        </div>
-                    `;
-                });
-            } catch(e) { container.innerHTML = "<p style='text-align:center; opacity:0.3; font-size:10px;'>Vault access denied or empty.</p>"; }
+            container.innerHTML = data.map(up => `
+                <div class="file-item">
+                    <div>
+                        <h5 style="font-family:'Orbitron'; font-size:13px;">${up.name}</h5>
+                        <p style="font-size:10px; color:#888;">${up.desc}</p>
+                    </div>
+                    <a href="${up.url}" target="_blank" class="btn-download">GET</a>
+                </div>
+            `).join('');
         }
 
-        // --- SISTEM UI ---
         function showLogin() {
-            document.getElementById('entry-overlay').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('entry-overlay').style.display = 'none';
-                document.getElementById('login-overlay').style.display = 'flex';
-            }, 1000);
+            document.getElementById('entry-overlay').style.display = 'none';
+            document.getElementById('login-overlay').style.display = 'flex';
         }
 
         function startSystem() {
             document.getElementById('login-overlay').style.display = 'none';
-            const intro = document.getElementById('intro-screen');
-            intro.style.display = 'flex';
-            setTimeout(() => intro.style.opacity = '1', 50);
+            document.getElementById('intro-screen').style.display = 'flex';
+            document.getElementById('intro-screen').style.opacity = '1';
             document.getElementById('bgm').play().catch(()=>{});
-            
             fetchFiles();
-
-            document.getElementById('chibi').animate([
-                { bottom: '-120px' }, { bottom: '0px', offset: 0.3 }, { bottom: '0px', offset: 0.7 }, { bottom: '-120px' }
-            ], { duration: 5000, fill: 'forwards' });
+            
+            // Animasi Chibi & Transisi dipercepat (Total 3 detik)
+            document.getElementById('chibi').animate([{ bottom: '-120px' }, { bottom: '0px', offset: 0.3 }, { bottom: '0px', offset: 0.7 }, { bottom: '-120px' }], { duration: 2500, fill: 'forwards' });
 
             setTimeout(() => {
-                intro.style.opacity = '0';
-                setTimeout(() => {
-                    intro.style.display = 'none';
-                    document.getElementById('dashboard').classList.add('active');
-                    runTypewriter();
-                }, 1500);
-            }, 6000);
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('dashboard').classList.add('active');
+                runTypewriter();
+            }, 2800);
         }
 
         function runTypewriter() {
-            const txt = ["NEURAL LINK STABLE", "KEV.SOFT ENGINE v3", "YUI 03 ONLINE"];
+            const txt = ["NEURAL ONLINE", "KEV.SOFT v3"];
             let i = 0, j = 0, target = document.getElementById('typewriter');
             function type() {
-                if (j < txt[i].length) { target.innerHTML += txt[i][j++]; setTimeout(type, 120); }
-                else { setTimeout(() => { target.innerHTML = ""; j = 0; i = (i + 1) % txt.length; type(); }, 3000); }
+                if (j < txt[i].length) { target.innerHTML += txt[i][j++]; setTimeout(type, 50); }
+                else { setTimeout(() => { target.innerHTML = ""; j = 0; i = (i + 1) % txt.length; type(); }, 2000); }
             }
             type();
         }
 
         function initStars() {
             const container = document.getElementById('star-container');
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 50; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                star.style.cssText = `width:1.5px; height:1.5px; left:${Math.random()*100}%; top:${Math.random()*100}%; --duration:${Math.random()*3+3}s`;
+                star.style.cssText = `width:1.5px; height:1.5px; left:${Math.random()*100}%; top:${Math.random()*100}%; --duration:${Math.random()*3+2}s`;
                 container.appendChild(star);
             }
         }
-        
-        function createShootingStar() {
-            const container = document.getElementById('star-container');
-            const star = document.createElement('div');
-            star.className = 'shooting-star';
-            star.style.top = Math.random() * 50 + '%'; star.style.left = '100%';
-            container.appendChild(star);
-            setTimeout(() => star.remove(), 5000);
-        }
 
         initStars();
-        setInterval(createShootingStar, 7000);
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID', {hour12:false}); }, 1000);
-        
         let curS = 0;
         const sld = document.querySelectorAll('.slide');
         setInterval(() => {
             sld[curS].classList.remove('active');
             curS = (curS + 1) % sld.length;
             sld[curS].classList.add('active');
-        }, 6000);
+        }, 4000);
     </script>
 </body>
 </html>
