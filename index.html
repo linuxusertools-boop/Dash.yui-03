@@ -3,161 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YUI 03 | DASHBOARD</title>
+    <title>YUI 03 | NEURAL CONTROL CENTER</title>
+    
+    <script src="https://js.puter.com/v2/"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Orbitron:wght@400;700;900&display=swap');
-        :root { --primary: #00f2ff; --bg: #010206; --border: rgba(255,255,255,0.1); --success: #00ffaa; --warning: #ffb300; }
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans'; overflow-x: hidden; margin:0; }
-        .max-width { max-width: 800px; margin: 0 auto; padding: 20px; }
-        .update-box { border: 1px solid var(--primary); padding: 30px; border-radius: 30px; background: rgba(0,242,255,0.03); margin: 30px 0; }
-        .input-std { width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; border-radius: 10px; }
-        .main-btn { padding: 15px; width: 100%; cursor: pointer; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: #fff; font-family: 'Orbitron'; font-size: 10px; border-radius: 15px; transition: 0.3s; }
-        .main-btn:hover { background: rgba(255,255,255,0.1); }
-        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255,255,255,0.04); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .badge { font-size: 9px; padding: 3px 8px; border-radius: 5px; font-weight: bold; margin-left: 10px; text-transform: uppercase; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Orbitron:wght@400;700;900&family=Fira+Code:wght@400;500&display=swap');
+
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --success: #00ffaa;
+            --danger: #ff0055;
+            --warning: #ffb300;
+            --bg: #010206;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        
+        body { 
+            background: var(--bg); color: #ececec; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #0a0c1a 0%, #010206 100%);
+            height: 100vh;
+        }
+
+        /* --- BACKGROUND EFFECTS --- */
+        #star-container { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        .star { position: absolute; background: #fff; border-radius: 50%; opacity: 0.3; animation: twinkle var(--duration) infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
+        
+        .shooting-star { position: absolute; width: 1px; height: 1px; background: #fff; animation: shoot 5s linear infinite; opacity: 0; }
+        @keyframes shoot { 0% { transform: translateX(0) translateY(0) rotate(315deg); opacity: 0; } 5% { opacity: 1; } 20% { transform: translateX(-500px) translateY(500px) rotate(315deg); opacity: 0; } 100% { opacity: 0; } }
+
+        /* --- SCREENS --- */
+        #entry-overlay, #login-overlay, #intro-screen { position: fixed; inset: 0; z-index: 30000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        #entry-overlay { background: #000; }
+        #login-overlay { display: none; background: rgba(0,0,0,0.96); backdrop-filter: blur(20px); }
+        #intro-screen { display: none; background: #000; opacity: 0; }
+
+        /* --- POWER HUD --- */
+        .hud-ring { position: absolute; width: 280px; height: 280px; border: 1px solid rgba(0, 242, 255, 0.1); border-radius: 50%; animation: rotateHUD 15s linear infinite; }
+        .hud-ring::before { content: ''; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 15px var(--primary); }
+        @keyframes rotateHUD { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .power-btn { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); background: rgba(0, 242, 255, 0.05); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); transition: 0.5s; z-index: 2; }
+        .power-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px var(--primary); }
+
+        /* --- LOGIN & DASHBOARD --- */
+        .login-box { width: 340px; padding: 40px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); border-radius: 30px; }
+        .input-std { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 13px; margin-bottom: 15px; }
+
+        #dashboard { display: none; opacity: 0; transition: 2.5s; padding: 20px; height: 100vh; overflow-y: auto; }
+        #dashboard.active { display: block; opacity: 1; }
+        .max-width { max-width: 850px; margin: 0 auto; }
+
+        /* --- CARDS & PANELS --- */
+        .card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid var(--border); }
+        .ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .ai-card { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); padding: 20px; border-radius: 18px; transition: 0.3s; }
+        .ai-card:hover { border-color: var(--primary); background: rgba(0, 242, 255, 0.04); transform: translateY(-5px); }
+        .ai-card h3 { font-family: 'Orbitron'; font-size: 11px; color: var(--primary); margin-bottom: 10px; letter-spacing: 1px; }
+        .ai-card p { font-size: 10px; color: #aaa; line-height: 1.6; }
+
+        /* --- UPDATE SECTION --- */
+        .update-box { border: 1px solid var(--primary); border-radius: 30px; padding: 30px; background: rgba(0, 242, 255, 0.03); margin: 40px 0; }
+        .update-title { font-family: 'Orbitron'; font-weight: 900; color: var(--primary); text-align: center; margin-bottom: 25px; letter-spacing: 6px; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255,255,255,0.04); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 12px; }
+        
+        .main-btn { display: block; width: 100%; text-decoration: none; padding: 15px; text-align: center; border-radius: 15px; font-family: 'Orbitron'; font-size: 10px; font-weight: 700; cursor: pointer; transition: 0.4s; border: 1px solid var(--border); color: #fff; background: rgba(255,255,255,0.02); }
+        .main-btn:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+        .btn-download { background: var(--primary); color: #000; border: none; width: auto; padding: 10px 20px; border-radius: 10px; font-family: 'Orbitron'; font-size: 9px; cursor: pointer;}
+
+        .banner-wrap { position: relative; width: 100%; aspect-ratio: 21 / 9; border-radius: 35px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 50px; }
+        .slide { position: absolute; inset: 0; background-size: cover; opacity: 0; transition: 2s; }
+        .slide.active { opacity: 0.5; }
+
+        .badge { font-size: 8px; padding: 3px 8px; border-radius: 5px; font-weight: bold; margin-left: 8px; vertical-align: middle; }
         .bg-fix { background: var(--success); color: #000; }
-        .bg-maint { background: #ff4444; color: #fff; }
-        progress { width: 100%; height: 10px; border-radius: 5px; margin-bottom: 10px; }
+        .bg-maint { background: var(--danger); color: #fff; }
+
+        .chibi-img { position: absolute; width: 85px; bottom: -120px; left: 50%; transform: translateX(-50%); opacity: 0.9; }
     </style>
 </head>
 <body>
 
-    <main class="max-width">
-        <div style="text-align:center; padding: 40px 0;">
-            <h1 style="font-family:'Orbitron'; color:var(--primary); letter-spacing:5px;">YUI ¤ 03</h1>
-            <p style="font-size:10px; opacity:0.5; font-family:'Orbitron';">NEURAL CLOUD SYNC ACTIVE</p>
-        </div>
+    <div id="star-container"></div>
 
-        <div id="admin-panel" style="border: 1px solid var(--success); padding: 25px; border-radius: 25px; background: rgba(0,255,170,0.02); margin-bottom: 30px;">
-            <h4 style="font-family:'Orbitron'; color:var(--success); margin-bottom:20px; font-size:12px;">DEPLOYMENT CONSOLE</h4>
-            <select id="upType" class="input-std" onchange="toggleFile()">
-                <option value="fix">FIX / NEW UPDATE</option>
-                <option value="maint">MAINTENANCE MODE</option>
-            </select>
-            <input type="text" id="upDesc" class="input-std" placeholder="Update Description (e.g. Bug fixes in Neural Node)">
-            <input type="file" id="upFile" class="input-std">
-            <progress id="upProg" value="0" max="100" style="display:none;"></progress>
-            <button id="btnPush" class="main-btn" style="background:var(--success); color:#000; border:none; font-weight:800;">PUSH TO PUBLIC STREAM</button>
+    <div id="entry-overlay">
+        <div class="hud-ring"></div>
+        <div class="power-btn" onclick="showLogin()">
+            <div style="width:3px; height:25px; background:var(--primary); border-radius:5px; position:relative; top:-2px;"></div>
         </div>
+        <p style="margin-top:30px; font-family:'Orbitron'; font-size:12px; letter-spacing:8px; color:var(--primary);">SYSTEM STANDBY</p>
+        <p style="margin-top:10px; font-size:9px; color:rgba(255,255,255,0.3); font-family:'Orbitron';">KEV.SOFT NEURAL LINK v3.0</p>
+    </div>
 
-        <div class="update-box">
-            <h3 style="font-family:'Orbitron'; color:var(--primary); text-align:center; margin-bottom:25px; letter-spacing:5px;">(𝗨𝗣𝗗𝗔𝗧𝗘 𝗙𝗜𝗟𝗘)</h3>
-            <div id="update-list">
-                <p style="text-align:center; opacity:0.3; font-size:12px;">Connecting to Firebase Storage...</p>
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2 style="font-family:'Orbitron'; font-size:14px; color:var(--primary); text-align:center; margin-bottom:30px; letter-spacing:4px;">NEURAL ACCESS</h2>
+            <input type="text" id="userIn" class="input-std" placeholder="Identity">
+            <input type="password" id="passIn" class="input-std" placeholder="Security Code">
+            <button onclick="handleLogin()" class="main-btn" style="background:var(--primary); color:#000;">INITIALIZE SYNC</button>
+            <div id="login-err" style="color:var(--danger); font-size:10px; text-align:center; margin-top:15px; font-family:'Fira Code';"></div>
+        </div>
+    </div>
+
+    <div id="intro-screen">
+        <div style="width: 150px; height: 100px; position: relative; overflow: hidden;">
+            <img src="https://img1.pixhost.to/images/11314/677993135_cantarella.jpg" class="chibi-img" id="chibi">
+        </div>
+        <p style="font-family:'Orbitron'; font-size:10px; color:var(--primary); margin-top:30px; letter-spacing:6px;">SYNCHRONIZING...</p>
+    </div>
+
+    <main id="dashboard">
+        <div class="max-width">
+            <nav style="display:flex; justify-content:space-between; padding:20px 0; font-family:'Orbitron'; font-size:9px; border-bottom:1px solid var(--border); margin-bottom:40px;">
+                <div>STATUS: <span id="display-role" style="color:var(--primary); opacity: 1;">ACTIVE</span></div>
+                <div id="clock">00:00:00</div>
+            </nav>
+
+            <section id="admin-section" style="display:none; margin-bottom:40px;">
+                <div class="card" style="border-color:var(--success); background:rgba(0,255,170,0.01);">
+                    <h4 style="color:var(--success); font-family:'Orbitron'; font-size:11px; margin-bottom:20px;">ADMINISTRATION CONSOLE</h4>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                        <div>
+                            <p style="font-size:10px; color:var(--success); margin-bottom:10px;">USER REGISTRY</p>
+                            <input type="text" id="newU" class="input-std" placeholder="Username">
+                            <input type="password" id="newP" class="input-std" placeholder="Password">
+                            <button onclick="createUser()" class="main-btn" style="background:var(--success); color:#000;">CREATE USER</button>
+                        </div>
+                        <div>
+                            <p style="font-size:10px; color:var(--warning); margin-bottom:10px;">UPDATE DEPLOYMENT</p>
+                            <select id="upType" class="input-std" onchange="checkUpdateType()">
+                                <option value="fix">FIX / UPDATE</option>
+                                <option value="maint">MAINTENANCE</option>
+                            </select>
+                            <input type="text" id="upDesc" class="input-std" placeholder="Description">
+                            <input type="file" id="upFile" class="input-std">
+                            <button id="pushBtn" onclick="pushUpdate()" class="main-btn" style="background:var(--warning); color:#000;">DEPLOY TO CLOUD</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="banner-wrap">
+                <div class="slide active" style="background-image: url('https://img1.pixhost.to/images/11314/677989988_cantarella.jpg');"></div>
+                <div class="slide" style="background-image: url('https://img1.pixhost.to/images/11314/677987481_cantarella.jpg');"></div>
             </div>
+
+            <div style="margin-top:-90px; position:relative; padding:0 20px; margin-bottom: 50px;">
+                <h1 style="font-family:'Orbitron'; font-size:2.5rem; color:#fff; text-shadow:0 0 20px rgba(0,242,255,0.4);">YUI ¤ 03</h1>
+                <div id="typewriter" style="color:var(--primary); font-family:'Orbitron'; font-size:12px; margin-top:12px; letter-spacing:4px;"></div>
+            </div>
+
+            <section>
+                <div style="font-family:'Orbitron'; font-size:12px; color:var(--primary); border-left:3px solid var(--primary); padding-left:15px; margin-bottom:20px;">NEURAL CAPABILITIES</div>
+                <div class="ai-grid">
+                    <div class="ai-card">
+                        <h3>MULTI-PLATFORM</h3>
+                        <p>Sinkronisasi cerdas antar WhatsApp, Discord, dan Telegram dalam satu core.</p>
+                    </div>
+                    <div class="ai-card">
+                        <h3>ADVANCED LOGIC</h3>
+                        <p>Pemrosesan bahasa alami tingkat lanjut untuk interaksi yang lebih manusiawi.</p>
+                    </div>
+                    <div class="ai-card">
+                        <h3>SECURE SYNC</h3>
+                        <p>Database terenkripsi dengan protokol keamanan KEV.SOFT tingkat tinggi.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="update-box">
+                <div class="update-title">𝗨𝗣𝗗𝗔𝗧𝗘 𝗙𝗜𝗟𝗘</div>
+                <div id="file-list-container">
+                    <div style="text-align:center; color:#555; font-size:11px; padding:20px;">Synchronizing with Puter Cloud...</div>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top: 40px;">
+                <a href="https://whatsapp.com/channel/0029VbBtesK5kg78mXFRDa3W" target="_blank" class="main-btn" style="border-color:#25d366; color:#25d366;">WA CHANNEL</a>
+                <a href="https://wa.me/628999864414" target="_blank" class="main-btn" style="border-color:var(--secondary); color:var(--secondary);">DEVELOPER</a>
+            </div>
+
+            <footer style="text-align: center; padding: 80px 0 40px; opacity: 0.3; font-family: 'Orbitron'; font-size: 7px; letter-spacing: 3px;">
+                CORE SYSTEM BY <span style="color:var(--primary)">KEV.SOFT</span> • 2026
+            </footer>
         </div>
     </main>
 
-    <script type="module">
-        // Import Firebase Modular
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-        import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
+    <audio id="bgm" loop><source src="https://c.termai.cc/a107/jRg8Bv.mp3" type="audio/mpeg"></audio>
 
-        // Konfigurasi Milikmu
-        const firebaseConfig = {
-            apiKey: "AIzaSyBrSQQw5iSgX5FeZlOOAsn6wZVdBTualc4",
-            authDomain: "yui-system.firebaseapp.com",
-            projectId: "yui-system",
-            storageBucket: "yui-system.firebasestorage.app",
-            messagingSenderId: "116127420074",
-            appId: "1:116127420074:web:324b963d1fe2a2e0db0ad3",
-            measurementId: "G-78GJCCMBVZ"
-        };
+    <script>
+        // --- KONFIGURASI PUTER ---
+        const PUTER_DIR = "yui_neural_updates";
+        
+        // Pastikan folder penyimpanan ada di cloud Puter Anda
+        puter.directory.create(PUTER_DIR).catch(() => {});
 
-        // Initialize
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const storage = getStorage(app);
+        // Data login tetap tersimpan di browser Anda
+        let USERS = JSON.parse(localStorage.getItem('yui_users')) || [
+            { u: "admin@kev.soft", p: "kevin@admin#update+console/kev.com", role: "ADMIN" }
+        ];
 
-        // Toggle File Input
-        window.toggleFile = () => {
+        function showLogin() {
+            document.getElementById('entry-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('entry-overlay').style.display = 'none';
+                document.getElementById('login-overlay').style.display = 'flex';
+            }, 1000);
+        }
+
+        function handleLogin() {
+            const u = document.getElementById('userIn').value;
+            const p = document.getElementById('passIn').value;
+            const found = USERS.find(user => user.u === u && user.p === p);
+
+            if (found) {
+                document.getElementById('display-role').innerText = found.role;
+                document.getElementById('admin-section').style.display = (found.role === "ADMIN") ? "block" : "none";
+                document.getElementById('login-overlay').style.opacity = '0';
+                setTimeout(startSystem, 1200);
+            } else {
+                document.getElementById('login-err').innerText = "ACCESS DENIED: INVALID CORE KEY";
+            }
+        }
+
+        function createUser() {
+            const u = document.getElementById('newU').value;
+            const p = document.getElementById('newP').value;
+            if(u && p) {
+                USERS.push({ u: u, p: p, role: "USER" });
+                localStorage.setItem('yui_users', JSON.stringify(USERS));
+                alert("Neural Registry Updated: " + u);
+                document.getElementById('newU').value = ""; document.getElementById('newP').value = "";
+            }
+        }
+
+        function checkUpdateType() {
             const type = document.getElementById('upType').value;
-            document.getElementById('upFile').style.display = (type === 'maint') ? 'none' : 'block';
-        };
+            document.getElementById('upFile').disabled = (type === 'maint');
+            document.getElementById('upFile').style.opacity = (type === 'maint') ? '0.3' : '1';
+        }
 
-        // Push Update Function
-        document.getElementById('btnPush').onclick = async () => {
+        // --- FUNGSI CLOUD (Puter.js) ---
+        async function pushUpdate() {
             const type = document.getElementById('upType').value;
             const desc = document.getElementById('upDesc').value;
-            const file = document.getElementById('upFile').files[0];
-            const btn = document.getElementById('btnPush');
-            const prog = document.getElementById('upProg');
+            const fileInput = document.getElementById('upFile');
+            const btn = document.getElementById('pushBtn');
 
-            if(!desc) return alert("Isi deskripsi!");
+            if (type === 'fix' && !fileInput.files[0]) return alert("Pilih file update!");
+            if (!desc) return alert("Isi deskripsi!");
 
+            btn.innerText = "UPLOADING TO CLOUD...";
             btn.disabled = true;
-            btn.innerText = "PROCESSING...";
 
             try {
-                let downloadURL = null;
-                let fileName = "SYSTEM_MSG";
-
-                if (type === 'fix' && file) {
+                let fileName = "MAINTENANCE_LOG";
+                if (type === 'fix') {
+                    const file = fileInput.files[0];
                     fileName = file.name;
-                    prog.style.display = "block";
-                    const storageRef = sRef(storage, 'updates/' + file.name);
-                    const uploadTask = uploadBytesResumable(storageRef, file);
-
-                    await new Promise((resolve, reject) => {
-                        uploadTask.on('state_changed', 
-                            (snap) => { prog.value = (snap.bytesTransferred / snap.totalBytes) * 100; },
-                            (err) => reject(err),
-                            async () => {
-                                downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                                resolve();
-                            }
-                        );
-                    });
+                    // Upload file asli ke Cloud Puter
+                    await puter.fs.write(`${PUTER_DIR}/${fileName}`, file);
                 }
 
-                // Simpan ke Realtime Database
-                const newListRef = push(ref(db, 'neural_updates'));
-                await set(newListRef, {
+                // Ambil daftar lama dari cloud agar tidak hilang
+                let metadata = [];
+                try {
+                    const existing = await puter.fs.read(`${PUTER_DIR}/meta.json`);
+                    metadata = JSON.parse(await existing.text());
+                } catch(e) {}
+
+                // Tambahkan update baru ke daftar
+                metadata.unshift({
+                    id: Date.now(),
                     type,
                     name: fileName,
                     desc,
-                    url: downloadURL,
                     time: new Date().toLocaleString('id-ID')
                 });
 
-                alert("Deployed successfully!");
+                // Simpan kembali daftar metadata ke cloud
+                await puter.fs.write(`${PUTER_DIR}/meta.json`, JSON.stringify(metadata));
+                
+                alert("Neural Cloud Updated!");
                 location.reload();
-            } catch (e) {
-                console.error(e);
-                alert("Error: " + e.message);
+            } catch (err) {
+                alert("Cloud sync failed: " + err.message);
+            } finally {
+                btn.innerText = "DEPLOY TO CLOUD";
                 btn.disabled = false;
-                btn.innerText = "PUSH TO PUBLIC STREAM";
             }
-        };
+        }
 
-        // Real-time Listener (User View)
-        onValue(ref(db, 'neural_updates'), (snapshot) => {
-            const container = document.getElementById('update-list');
-            container.innerHTML = "";
-            const data = snapshot.val();
+        async function renderUpdates() {
+            const container = document.getElementById('file-list-container');
+            try {
+                // Baca file metadata dari cloud Puter
+                const metaFile = await puter.fs.read(`${PUTER_DIR}/meta.json`);
+                const updates = JSON.parse(await metaFile.text());
 
-            if (!data) {
-                container.innerHTML = "<p style='text-align:center; opacity:0.3;'>No neural updates found.</p>";
-                return;
-            }
+                if (updates.length === 0) throw new Error();
 
-            Object.values(data).reverse().forEach(up => {
-                const isMaint = up.type === 'maint';
-                container.innerHTML += `
-                    <div class="file-item">
-                        <div>
-                            <div style="font-family:'Orbitron'; font-size:13px; color:#fff;">
-                                ${up.name} <span class="badge ${isMaint ? 'bg-maint' : 'bg-fix'}">${up.type}</span>
+                container.innerHTML = "";
+                updates.forEach(up => {
+                    const isMaint = up.type === 'maint';
+                    container.innerHTML += `
+                        <div class="file-item">
+                            <div class="file-info">
+                                <h5 style="font-family:'Orbitron'; font-size:13px; color:#fff;">${up.name} <span class="badge ${isMaint ? 'bg-maint' : 'bg-fix'}">${up.type.toUpperCase()}</span></h5>
+                                <p style="font-size:10px; color:#888; margin-top:5px;">${up.desc} <br> <span style="color:var(--primary); font-size:9px;">Sync Time: ${up.time}</span></p>
                             </div>
-                            <div style="font-size:11px; color:#aaa; margin-top:5px;">${up.desc}</div>
-                            <div style="font-size:9px; color:var(--primary); margin-top:5px; font-family:'Orbitron';">${up.time}</div>
+                            ${!isMaint ? `<button onclick="downloadFromCloud('${up.name}')" class="btn-download">GET</button>` : ''}
                         </div>
-                        ${up.url ? `<a href="${up.url}" target="_blank" class="main-btn" style="width:auto; padding:10px 20px; background:var(--primary); color:#000; border:none;">GET</a>` : ''}
-                    </div>
-                `;
-            });
-        });
+                    `;
+                });
+            } catch (e) {
+                container.innerHTML = `<div style="text-align:center; color:#555; font-size:11px; padding:20px;">Neural storage is currently empty in cloud.</div>`;
+            }
+        }
+
+        async function downloadFromCloud(name) {
+            try {
+                // Ambil file dari cloud Puter
+                const file = await puter.fs.read(`${PUTER_DIR}/${name}`);
+                const url = URL.createObjectURL(file);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = name;
+                a.click();
+            } catch(e) {
+                alert("File link broken or expired.");
+            }
+        }
+
+        // --- SISTEM INISIALISASI ---
+        function startSystem() {
+            document.getElementById('login-overlay').style.display = 'none';
+            const intro = document.getElementById('intro-screen');
+            intro.style.display = 'flex';
+            setTimeout(() => intro.style.opacity = '1', 50);
+            document.getElementById('bgm').play().catch(()=>{});
+
+            document.getElementById('chibi').animate([
+                { bottom: '-120px' }, { bottom: '0px', offset: 0.3 }, { bottom: '0px', offset: 0.7 }, { bottom: '-120px' }
+            ], { duration: 5000, fill: 'forwards' });
+
+            setTimeout(() => {
+                intro.style.opacity = '0';
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                    document.getElementById('dashboard').classList.add('active');
+                    runTypewriter();
+                    renderUpdates(); // Load file dari cloud saat dashboard terbuka
+                }, 1500);
+            }, 6000);
+        }
+
+        function runTypewriter() {
+            const txt = ["NEURAL LINK STABLE", "KEV.SOFT ENGINE v3", "YUI 03 ONLINE"];
+            let i = 0, j = 0, target = document.getElementById('typewriter');
+            function type() {
+                if (j < txt[i].length) { target.innerHTML += txt[i][j++]; setTimeout(type, 120); }
+                else { setTimeout(() => { target.innerHTML = ""; j = 0; i = (i + 1) % txt.length; type(); }, 3000); }
+            }
+            type();
+        }
+
+        function initStars() {
+            const container = document.getElementById('star-container');
+            for (let i = 0; i < 80; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.cssText = `width:1.5px; height:1.5px; left:${Math.random()*100}%; top:${Math.random()*100}%; --duration:${Math.random()*3+3}s`;
+                container.appendChild(star);
+            }
+        }
+
+        function createShootingStar() {
+            const container = document.getElementById('star-container');
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            star.style.top = Math.random() * 50 + '%'; star.style.left = '100%';
+            container.appendChild(star);
+            setTimeout(() => star.remove(), 5000);
+        }
+
+        initStars();
+        setInterval(createShootingStar, 7000);
+        setInterval(() => { 
+            const clock = document.getElementById('clock');
+            if(clock) clock.innerText = new Date().toLocaleTimeString('id-ID', {hour12:false}); 
+        }, 1000);
+        
+        let curS = 0;
+        const sld = document.querySelectorAll('.slide');
+        setInterval(() => {
+            if(sld.length > 0) {
+                sld[curS].classList.remove('active');
+                curS = (curS + 1) % sld.length;
+                sld[curS].classList.add('active');
+            }
+        }, 6000);
     </script>
 </body>
 </html>
