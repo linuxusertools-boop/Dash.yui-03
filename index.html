@@ -19,6 +19,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        
         body { 
             background: var(--bg); color: #ececec; 
             font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -27,31 +28,63 @@
             height: 100vh;
         }
 
-        /* Screens */
+        /* --- BACKGROUND STARS EFFECT --- */
+        #star-container { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+        .star { position: absolute; background: #fff; border-radius: 50%; opacity: 0.3; animation: twinkle var(--duration) infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.2); } }
+        
+        .shooting-star {
+            position: absolute; width: 2px; height: 2px; background: #fff;
+            border-radius: 50%; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 10px var(--primary);
+            animation: animate-star 3s linear infinite; opacity: 0;
+        }
+        .shooting-star::before {
+            content: ''; position: absolute; top: 50%; transform: translateY(-50%);
+            width: 150px; height: 1px; background: linear-gradient(90deg, var(--primary), transparent);
+        }
+        @keyframes animate-star {
+            0% { transform: rotate(315deg) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: rotate(315deg) translateX(-600px); opacity: 0; }
+        }
+
+        /* --- SCREENS --- */
         #entry-overlay, #login-overlay, #intro-screen { position: fixed; inset: 0; z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s; }
         #entry-overlay { background: #000; }
-        #login-overlay { display: none; background: rgba(0,0,0,0.97); backdrop-filter: blur(20px); }
+        #login-overlay { display: none; background: rgba(0,0,0,0.98); backdrop-filter: blur(20px); }
         #intro-screen { display: none; background: #000; }
 
-        .power-btn { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); }
-        
-        .login-box { width: 350px; padding: 40px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); border-radius: 30px; text-align: center; }
-        .input-std { width: 100%; padding: 14px; background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 13px; margin-bottom: 15px; }
+        .power-btn { 
+            width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); 
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2); transition: 0.5s;
+        }
+        .power-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px var(--primary); }
 
-        #dashboard { display: none; padding: 20px; opacity: 0; transition: 1.5s; max-width: 850px; margin: 0 auto; }
+        .login-box { width: 350px; padding: 40px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); border-radius: 30px; text-align: center; }
+        .input-std { width: 100%; padding: 14px; background: rgba(255,255,255,0.07); border: 1px solid var(--border); border-radius: 12px; color: #fff; margin-bottom: 15px; }
+
+        /* --- DASHBOARD --- */
+        #dashboard { display: none; padding: 20px; opacity: 0; transition: 1.5s; max-width: 850px; margin: 0 auto; overflow-y: auto; height: 100vh; }
         #dashboard.active { display: block; opacity: 1; }
 
-        .admin-card { border: 1px solid var(--success); padding: 20px; border-radius: 20px; background: rgba(0,255,170,0.02); margin-bottom: 30px; }
+        .banner-wrap { position: relative; width: 100%; aspect-ratio: 21 / 9; border-radius: 25px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 40px; }
+        .slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: 1.5s; }
+        .slide.active { opacity: 0.6; }
+
         .update-box { border: 1px solid var(--primary); border-radius: 25px; padding: 25px; background: rgba(0, 242, 255, 0.03); }
         .file-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); }
         
-        .btn-main { width: 100%; padding: 15px; border-radius: 12px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; border: none; font-weight: bold; }
+        .btn-main { width: 100%; padding: 15px; border-radius: 12px; font-family: 'Orbitron'; cursor: pointer; border: none; font-weight: bold; transition: 0.3s; }
         .btn-download { background: var(--primary); color: #000; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-size: 10px; font-family: 'Orbitron'; font-weight: bold; }
 
+        .chibi-img { width: 85px; opacity: 0.9; margin-bottom: 20px; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
     </style>
 </head>
 <body>
+
+    <div id="star-container"></div>
 
     <div id="entry-overlay">
         <div class="power-btn" onclick="showLogin()">
@@ -62,7 +95,7 @@
 
     <div id="login-overlay">
         <div class="login-box" id="lbox">
-            <h2 style="font-family:'Orbitron'; font-size:13px; color:var(--primary); margin-bottom:25px;">NEURAL ACCESS</h2>
+            <h2 style="font-family:'Orbitron'; font-size:14px; color:var(--primary); margin-bottom:25px;">NEURAL ACCESS</h2>
             <input type="text" id="userIn" class="input-std" placeholder="Identity" autocomplete="off">
             <input type="password" id="passIn" class="input-std" placeholder="Security Code" autocomplete="off">
             <button onclick="handleLogin()" class="btn-main" style="background:var(--primary); color:#000;">INITIALIZE SYNC</button>
@@ -71,43 +104,72 @@
     </div>
 
     <div id="intro-screen">
-        <p style="font-family:'Orbitron'; font-size:10px; color:var(--primary); letter-spacing:4px;">ESTABLISHING CLOUD LINK...</p>
+        <img src="https://img1.pixhost.to/images/11314/677993135_cantarella.jpg" class="chibi-img">
+        <p style="font-family:'Orbitron'; font-size:10px; color:var(--primary); letter-spacing:4px;">SYNCING NEURAL CLOUD...</p>
     </div>
 
     <main id="dashboard">
-        <nav style="display:flex; justify-content:space-between; padding:20px 0; font-family:'Orbitron'; font-size:8px; border-bottom:1px solid var(--border); margin-bottom:30px;">
+        <nav style="display:flex; justify-content:space-between; padding:20px 0; font-family:'Orbitron'; font-size:9px; border-bottom:1px solid var(--border); margin-bottom:30px;">
             <div>CORE: <span id="role-tag" style="color:var(--primary)">ACTIVE</span></div>
             <div id="clock">00:00:00</div>
         </nav>
 
-        <section id="admin-panel" style="display:none;" class="admin-card">
-            <p style="color:var(--success); font-family:'Orbitron'; font-size:10px; margin-bottom:15px;">ADMIN DEPLOYMENT CENTER</p>
+        <section id="admin-panel" style="display:none; border: 1px solid var(--success); padding: 20px; border-radius: 20px; background: rgba(0,255,170,0.02); margin-bottom: 30px;">
+            <p style="color:var(--success); font-family:'Orbitron'; font-size:10px; margin-bottom:15px;">ADMIN DEPLOYMENT</p>
             <input type="text" id="upDesc" class="input-std" placeholder="Update Description">
             <input type="file" id="upFile" class="input-std">
             <button id="pushBtn" onclick="pushUpdate()" class="btn-main" style="background:var(--success); color:#000;">PUSH TO GLOBAL STREAM</button>
         </section>
 
+        <div class="banner-wrap">
+            <div class="slide active" style="background-image: url('https://img1.pixhost.to/images/11314/677989988_cantarella.jpg');"></div>
+            <div class="slide" style="background-image: url('https://img1.pixhost.to/images/11314/677987481_cantarella.jpg');"></div>
+        </div>
+
         <h1 style="font-family:'Orbitron'; font-size:2rem; margin-bottom:10px;">YUI ¤ 03</h1>
-        <div style="height:2px; width:50px; background:var(--primary); margin-bottom:40px;"></div>
+        <div id="typewriter" style="color:var(--primary); font-family:'Orbitron'; font-size:12px; margin-bottom:40px; letter-spacing:3px;"></div>
 
         <div class="update-box">
             <p style="font-family:'Orbitron'; font-size:11px; margin-bottom:20px; color:var(--primary);">GLOBAL UPDATE STREAM</p>
-            <div id="file-list">
-                <p style="text-align:center; opacity:0.3; font-size:10px;">Awaiting neural data...</p>
-            </div>
+            <div id="file-list"><p style="text-align:center; opacity:0.3; font-size:10px;">Awaiting data...</p></div>
         </div>
+
+        <footer style="text-align: center; padding: 60px 0 20px; opacity: 0.2; font-family: 'Orbitron'; font-size: 7px;">KEV.SOFT • 2026</footer>
     </main>
 
+    <audio id="bgm" loop><source src="https://c.termai.cc/a107/jRg8Bv.mp3" type="audio/mpeg"></audio>
+
     <script>
-        const PUTER_DIR = "yui_neural_public";
-        let isSystemAdmin = false;
+        const ADMIN_ID = "admin@kev.soft";
+        const ADMIN_PASS = "kevin@admin#update+console/kev.com";
+        const PUTER_DIR = "yui_global_v3";
 
-        // --- DATA LOGIN (DIPERBAIKI) ---
-        const CREDENTIALS = {
-            user: "admin@kev.soft",
-            pass: "kevin@admin#update+console/kev.com"
-        };
+        // --- BACKGROUND LOGIC ---
+        function initStars() {
+            const container = document.getElementById('star-container');
+            for (let i = 0; i < 80; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2 + 'px';
+                star.style.width = size; star.style.height = size;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+                container.appendChild(star);
+            }
+        }
 
+        function createShootingStar() {
+            const container = document.getElementById('star-container');
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            star.style.top = Math.random() * 50 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            container.appendChild(star);
+            setTimeout(() => star.remove(), 3000);
+        }
+
+        // --- LOGIN & SYSTEM LOGIC ---
         function showLogin() {
             document.getElementById('entry-overlay').style.opacity = '0';
             setTimeout(() => {
@@ -119,123 +181,110 @@
         async function handleLogin() {
             const u = document.getElementById('userIn').value.trim();
             const p = document.getElementById('passIn').value.trim();
-            const errDisplay = document.getElementById('login-err');
-
-            // Cek Admin
-            if (u === CREDENTIALS.user && p === CREDENTIALS.pass) {
-                isSystemAdmin = true;
+            
+            if (u === ADMIN_ID && p === ADMIN_PASS) {
+                window.isSystemAdmin = true;
                 document.getElementById('role-tag').innerText = "ADMIN-CORE";
-                document.getElementById('admin-panel').style.display = "block";
+                document.getElementById('admin-panel').style.display = 'block';
+                proceedToDashboard();
                 
-                // Login Puter hanya untuk Admin agar bisa tulis data
-                if (!puter.auth.isSignedIn()) {
-                    alert("Admin detected. Selesaikan login Puter untuk sinkronisasi cloud.");
-                    await puter.auth.signIn();
-                }
-                await puter.directory.create(PUTER_DIR).catch(()=>{});
+                setTimeout(async () => {
+                    if (!puter.auth.isSignedIn()) await puter.auth.signIn();
+                    await puter.directory.create(PUTER_DIR).catch(()=>{});
+                }, 1500);
+            } else if (u === "user" && p === "user") {
+                window.isSystemAdmin = false;
+                document.getElementById('role-tag').innerText = "GUEST-USER";
                 proceedToDashboard();
-            } 
-            // Cek User Biasa
-            else if (u === "user" && p === "user") {
-                isSystemAdmin = false;
-                document.getElementById('role-tag').innerText = "GUEST-LINK";
-                proceedToDashboard();
-            } 
-            else {
+            } else {
                 document.getElementById('lbox').style.animation = "shake 0.4s";
-                errDisplay.innerText = "ERROR: INVALID IDENTITY OR SECURITY CODE";
-                setTimeout(() => document.getElementById('lbox').style.animation = "", 400);
+                document.getElementById('login-err').innerText = "ACCESS DENIED";
             }
         }
 
         function proceedToDashboard() {
+            document.getElementById('bgm').play().catch(()=>{});
             document.getElementById('login-overlay').style.opacity = '0';
             document.getElementById('intro-screen').style.display = 'flex';
-            
-            fetchGlobalUpdates();
+            renderGlobalUpdates();
 
             setTimeout(() => {
                 document.getElementById('intro-screen').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('intro-screen').style.display = 'none';
                     document.getElementById('dashboard').classList.add('active');
+                    startTypewriter();
                 }, 800);
             }, 3000);
         }
 
-        // --- CLOUD LOGIC ---
-
+        // --- CLOUD FUNCTIONS ---
         async function pushUpdate() {
             const file = document.getElementById('upFile').files[0];
             const desc = document.getElementById('upDesc').value;
             const btn = document.getElementById('pushBtn');
+            if(!file || !desc) return alert("Missing data!");
 
-            if(!file || !desc) return alert("Pilih file & isi deskripsi!");
-
-            btn.innerText = "DEPLOYING TO CLOUD...";
-            btn.disabled = true;
-
+            btn.innerText = "UPLOADING..."; btn.disabled = true;
             try {
                 const path = `${PUTER_DIR}/${file.name}`;
-                // 1. Upload
                 await puter.fs.write(path, file);
-                // 2. Set Public (Sangat Penting!)
-                const pubFile = await puter.fs.makePublic(path);
+                const pub = await puter.fs.makePublic(path);
 
-                // 3. Update Meta
                 let meta = [];
                 try {
                     const res = await puter.fs.read(`${PUTER_DIR}/meta.json`);
                     meta = JSON.parse(await res.text());
                 } catch(e) {}
 
-                meta.unshift({
-                    name: file.name,
-                    desc: desc,
-                    url: pubFile.url,
-                    date: new Date().toLocaleDateString()
-                });
-
+                meta.unshift({ name: file.name, desc, url: pub.url, time: new Date().toLocaleString() });
                 await puter.fs.write(`${PUTER_DIR}/meta.json`, JSON.stringify(meta));
                 await puter.fs.makePublic(`${PUTER_DIR}/meta.json`);
 
-                alert("DEPLOY SUCCESS: Semua perangkat telah tersinkronisasi.");
-                location.reload();
-            } catch (err) {
-                alert("Cloud Sync Error: " + err.message);
-                btn.disabled = false;
-                btn.innerText = "PUSH TO GLOBAL STREAM";
-            }
+                alert("Deployed!"); location.reload();
+            } catch (err) { alert(err.message); btn.disabled = false; }
         }
 
-        async function fetchGlobalUpdates() {
+        async function renderGlobalUpdates() {
             const list = document.getElementById('file-list');
             try {
-                // User guest membaca file meta.json yang sudah dibuat publik oleh admin
                 const res = await puter.fs.read(`${PUTER_DIR}/meta.json`);
                 const data = JSON.parse(await res.text());
-
-                if (data.length === 0) throw new Error();
-
                 list.innerHTML = "";
                 data.forEach(item => {
                     list.innerHTML += `
                         <div class="file-item">
                             <div>
                                 <p style="font-family:'Orbitron'; font-size:11px; color:var(--primary);">${item.name}</p>
-                                <p style="font-size:9px; opacity:0.6; margin-top:4px;">${item.desc} • ${item.date}</p>
+                                <p style="font-size:9px; opacity:0.6; margin-top:4px;">${item.desc} • ${item.time}</p>
                             </div>
-                            <a href="${item.url}" target="_blank" class="btn-download">DOWNLOAD</a>
+                            <a href="${item.url}" target="_blank" class="btn-download">GET</a>
                         </div>`;
                 });
-            } catch (e) {
-                list.innerHTML = `<p style="text-align:center; opacity:0.3; font-size:10px;">No public updates available.</p>`;
-            }
+            } catch (e) { list.innerHTML = "<p style='text-align:center; opacity:0.3;'>No updates.</p>"; }
         }
 
+        function startTypewriter() {
+            const txt = ["NEURAL LINK ACTIVE", "SYNCING DATA NODES", "YUI 03 ONLINE"];
+            let i = 0, j = 0, target = document.getElementById('typewriter');
+            function type() {
+                if (j < txt[i].length) { target.innerHTML += txt[i][j++]; setTimeout(type, 100); }
+                else { setTimeout(() => { target.innerHTML = ""; j = 0; i = (i + 1) % txt.length; type(); }, 2000); }
+            }
+            type();
+        }
+
+        // Initialize
+        initStars();
+        setInterval(createShootingStar, 4000);
         setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
-        }, 1000);
+            const sld = document.querySelectorAll('.slide');
+            let curr = [...sld].findIndex(s => s.classList.contains('active'));
+            sld[curr].classList.remove('active');
+            sld[(curr + 1) % sld.length].classList.add('active');
+        }, 5000);
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+
     </script>
 </body>
 </html>
